@@ -36,6 +36,7 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
   const [apiError, setApiError] = useState('')
 
   const cartTotal = cartProducts.reduce((sum, p) => sum + priceForCombo(p), 0)
+  const hasPhysical = cartProducts.some((p) => p.shipToHome)
 
   function setField(key, value) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -48,11 +49,13 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
     if (!form.phone.trim()) e.phone = 'Phone number is required'
     else if (!/^\d{10}$/.test(form.phone.replace(/\s/g, '')))
       e.phone = 'Enter a valid 10-digit phone number'
-    if (!form.line1.trim()) e.line1 = 'Address line 1 is required'
-    if (!form.city.trim()) e.city = 'City is required'
-    if (!form.state) e.state = 'State is required'
-    if (!form.pincode.trim()) e.pincode = 'Pincode is required'
-    else if (!/^\d{6}$/.test(form.pincode)) e.pincode = 'Enter a valid 6-digit pincode'
+    if (hasPhysical) {
+      if (!form.line1.trim()) e.line1 = 'Address line 1 is required'
+      if (!form.city.trim()) e.city = 'City is required'
+      if (!form.state) e.state = 'State is required'
+      if (!form.pincode.trim()) e.pincode = 'Pincode is required'
+      else if (!/^\d{6}$/.test(form.pincode)) e.pincode = 'Enter a valid 6-digit pincode'
+    }
     return e
   }
 
@@ -99,13 +102,13 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
                 name: form.name.trim(),
                 phoneNumber: form.phone.trim(),
                 source: 'combo',
-                address: {
+                address: hasPhysical ? {
                   line1:   form.line1.trim(),
                   line2:   form.line2.trim() || undefined,
                   city:    form.city.trim(),
                   state:   form.state,
                   pincode: form.pincode.trim(),
-                },
+                } : undefined,
               })
               resolve(result)
             } catch (err) {
@@ -193,7 +196,8 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
             </div>
           </section>
 
-          {/* Delivery Address */}
+          {/* Delivery Address — only needed when the order ships physical material */}
+          {hasPhysical && (
           <section className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
             <h2 className="font-semibold text-gray-900">Delivery Address</h2>
 
@@ -277,6 +281,7 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
               {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
             </div>
           </section>
+          )}
 
           {apiError && (
             <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
@@ -340,8 +345,17 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
             </div>
 
             <div className="bg-blue-50 rounded-xl px-3 py-2.5 text-xs text-blue-700 space-y-1">
-              <p className="font-semibold">Combo Order</p>
-              <p>Physical kit book will be shipped to your address. Course access granted instantly after payment.</p>
+              {hasPhysical ? (
+                <>
+                  <p className="font-semibold">Instant access + doorstep delivery</p>
+                  <p>Your course access is unlocked instantly after payment. The physical study material will be shipped to the address you enter above.</p>
+                </>
+              ) : (
+                <>
+                  <p className="font-semibold">Instant access</p>
+                  <p>This is a fully digital order. Your course access is unlocked instantly after payment — nothing needs to be shipped.</p>
+                </>
+              )}
             </div>
           </div>
         </aside>

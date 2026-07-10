@@ -20,6 +20,7 @@ async function request(method, path, body) {
 
 export const api = {
   getProducts: () => request('GET', '/purchase/products'),
+  getProduct: (id) => request('GET', `/purchase/course/${id}`),
   createOrder: (payload) => request('POST', '/purchase/create-order', payload),
   verifyPayment: (payload) => request('POST', '/purchase/verify', payload),
 }

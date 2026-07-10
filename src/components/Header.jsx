@@ -16,14 +16,13 @@ export default function Header({ view, onBack, cartCount, cartTotal, onCheckout 
               ← Back
             </button>
           )}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-sm">
-              F
+          <div className="flex items-center gap-2.5">
+            <div className="bg-white rounded-lg px-2 py-1 flex items-center">
+              <img src="/focas-logo.png" alt="FOCAS Edu" className="h-6 w-auto" />
             </div>
-            <div>
-              <p className="text-white font-black text-sm leading-none">FOCAS Edu</p>
-              <p className="text-slate-400 text-xs leading-none mt-0.5">Course Store</p>
-            </div>
+            <span className="text-slate-400 text-xs font-medium hidden sm:inline border-l border-slate-700 pl-2.5">
+              Course Store
+            </span>
           </div>
         </div>
 

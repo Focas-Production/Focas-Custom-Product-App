@@ -6,9 +6,10 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-black text-sm">F</div>
-              <span className="text-white font-black text-lg">FOCAS Edu</span>
+            <div className="flex items-center mb-3">
+              <div className="bg-white rounded-lg px-2.5 py-1.5 inline-flex items-center">
+                <img src="/focas-logo.png" alt="FOCAS Edu" className="h-7 w-auto" />
+              </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               India's trusted CA education platform. Courses, kit books, and combo bundles designed to help you crack the exam.
