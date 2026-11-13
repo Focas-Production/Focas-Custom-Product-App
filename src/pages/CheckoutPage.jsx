@@ -71,12 +71,23 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
       if (!loaded) throw new Error('Failed to load payment gateway. Check your connection.')
 
       const productIds = cartProducts.map((p) => p._id)
+      const address = hasPhysical ? {
+        line1:   form.line1.trim(),
+        line2:   form.line2.trim() || undefined,
+        city:    form.city.trim(),
+        state:   form.state,
+        pincode: form.pincode.trim(),
+      } : undefined
 
+      // Address goes in at create time too: if this tab dies while the buyer is
+      // in their UPI app, Razorpay's order.paid webhook records the order from
+      // the order's notes — including where to ship the books.
       const order = await api.createOrder({
         productIds,
         name: form.name.trim(),
         phoneNumber: form.phone.trim(),
         source: 'combo',
+        address,
       })
 
       await new Promise((resolve, reject) => {
@@ -102,13 +113,7 @@ export default function CheckoutPage({ cartProducts, onSuccess, onBack }) {
                 name: form.name.trim(),
                 phoneNumber: form.phone.trim(),
                 source: 'combo',
-                address: hasPhysical ? {
-                  line1:   form.line1.trim(),
-                  line2:   form.line2.trim() || undefined,
-                  city:    form.city.trim(),
-                  state:   form.state,
-                  pincode: form.pincode.trim(),
-                } : undefined,
+                address,
               })
               resolve(result)
             } catch (err) {
